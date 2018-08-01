@@ -6,10 +6,8 @@ import flush from "styled-jsx/server";
 import getPageContext from "../lib/pageContext";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 
-import { withI18next } from "../lib/withI18next";
-
 const bodyStyling = {
-  fontFamily: "Merriweather, serif",
+  fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
   margin: 0
 };
 
@@ -63,7 +61,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <html lang={this.props.t("current-language-code")}>
+      <html>
         <Head>
           <style dangerouslySetInnerHTML={{ __html: this.props.css }} />
         </Head>
@@ -76,4 +74,4 @@ class MyDocument extends Document {
   }
 }
 
-export default withI18next()(MyDocument);
+export default MyDocument;

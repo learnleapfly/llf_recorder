@@ -1,11 +1,12 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Recorder from "recorder-js";
 
-const isBrowser = typeof window != "undefined";
+const isBrowser = typeof window !== "undefined";
 
 const audioContext = isBrowser
   ? new (window.AudioContext || window.webkitAudioContext)()
@@ -76,7 +77,6 @@ class App extends Component {
 
   startRecording = () => {
     recorder.start().then(() => {
-      console.log("Starting!");
       this.setState({ blob: null, isRecording: true });
     });
   };
@@ -85,7 +85,6 @@ class App extends Component {
     if (this.state.isRecording) {
       recorder.stop().then(({ blob, buffer }) => {
         this.setState({ blob: blob, isRecording: false });
-        console.log("Done!!!");
         // buffer is an AudioBuffer
       });
     }
@@ -211,5 +210,9 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  classes: PropTypes.object
+};
 
 export default withStyles(styles)(App);
