@@ -1,131 +1,215 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import SearchComponent from "../components/search";
-import { withI18next } from "../lib/withI18next";
-import Layout from "../components/layout";
-import styled from "react-emotion";
+import Recorder from "recorder-js";
 
-const BlueBar = styled("div")`
-  border-top: 10px solid #303f9f;
-  width: 100%;
-`;
+const isBrowser = typeof window != "undefined";
 
-const Hero = styled("div")`
-  background-color: #eee;
-  color: #000;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 75px 16px 50px 16px;
-  text-align: center;
-`;
+const audioContext = isBrowser
+  ? new (window.AudioContext || window.webkitAudioContext)()
+  : undefined;
 
-const SearchArea = styled("div")`
-  color: #000;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0px 16px 20px 16px;
-  text-align: center;
-`;
+const recorder = new Recorder(audioContext, {
+  // An array of 255 Numbers
+  // You can use this to visualize the audio stream
+  // If you use react, check out react-wave-stream
+  // onAnalysed: data => console.log(data),
+});
 
-const HeroButton = styled("div")`
-  padding-top: 50px;
-`;
+const createRecordingStream = () => {
+  navigator.mediaDevices
+    .getUserMedia({ audio: true })
+    .then(stream => recorder.init(stream))
+    .catch(err => console.log("Uh oh... unable to get stream...", err));
+};
 
-const Search = styled("div")`
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 75px 16px 20px 16px;
-  text-align: center;
-  @media (max-width: 400px) {
-    padding: 10px;
+if (isBrowser) {
+  createRecordingStream();
+}
+
+const styles = theme => ({
+  app: {
+    textAlign: "center",
+    padding: "10px"
+  },
+  title: {
+    marginBottom: 4 * theme.spacing.unit
+  },
+  textFieldContainer: {
+    marginBottom: 8 * theme.spacing.unit
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200
+  },
+  sentence: {
+    margin: 2 * theme.spacing.unit
+  },
+  navigationButtonContainer: {
+    margin: theme.spacing.unit
+  },
+  button: {
+    textTransform: "none",
+    margin: theme.spacing.unit,
+    marginBottom: 4 * theme.spacing.unit
+  },
+  recordingLine: {
+    margin: theme.spacing.unit
   }
-`;
+});
 
-const Title = styled("div")`
-  font-size: 25px;
-  line-height: 50px;
-  max-width: 700px;
-  margin: 0 auto;
-`;
+class App extends Component {
+  state = {
+    audioStreamCreated: true,
+    sentences: ["Go attack the germs!!", "This is Khalai."],
+    sentenceIndex: 0,
+    blob: null,
+    isRecording: false,
 
-export class App extends Component {
+    country: "",
+    city: "",
+    age: ""
+  };
+
+  startRecording = () => {
+    recorder.start().then(() => {
+      console.log("Starting!");
+      this.setState({ blob: null, isRecording: true });
+    });
+  };
+
+  stopRecording = () => {
+    if (this.state.isRecording) {
+      recorder.stop().then(({ blob, buffer }) => {
+        this.setState({ blob: blob, isRecording: false });
+        console.log("Done!!!");
+        // buffer is an AudioBuffer
+      });
+    }
+  };
+
+  upload = () => {
+    console.log("upload", this.state.sentenceIndex, this.state.blob);
+  };
+
+  clearRecording = () => {
+    this.setState({ blob: null });
+  };
+
+  addToIndex = increment => {
+    this.setState({
+      sentenceIndex:
+        (this.state.sentenceIndex + increment + this.state.sentences.length) %
+        this.state.sentences.length
+    });
+  };
+
+  handleTextInput = field => event => {
+    this.setState({
+      [field]: event.target.value
+    });
+  };
+
   render() {
-    const { i18n, t } = this.props;
-    let urlGE = "A?section=A1&lng=" + t("current-language-code");
-    let urlBD = "benefits-directory?lng=" + t("current-language-code");
-    return (
-      <Layout
-        i18n={i18n}
-        t={t}
-        hideNoscript={false}
-        showRefreshCache={false}
-        backgroundColor="white"
-      >
-        <BlueBar />
-        <div style={{ backgroundColor: "#eee" }}>
-          <Hero>
-            <div style={{ paddingLeft: "16px", paddingRight: "16px" }}>
-              <Title id="heroTitle">{t("index.title")}</Title>
-              <HeroButton>
-                <Button
-                  id="heroGuidedLink"
-                  style={{
-                    marginBottom: "10px",
-                    padding: "15px",
-                    paddingLeft: "60px",
-                    paddingRight: "60px",
-                    textTransform: "none",
-                    borderRadius: "0px"
-                  }}
-                  variant="raised"
-                  color="primary"
-                  href={urlGE}
-                >
-                  {t("index.guided experience")}
-                </Button>
+    const { classes } = this.props;
+    const sentence = this.state.sentences[this.state.sentenceIndex];
 
-                <div>
-                  {t("index.or")}
-                  <a
-                    id="heroBenefitsLink"
-                    style={{
-                      marginBottom: "10px",
-                      padding: "20px",
-                      textTransform: "none"
-                    }}
-                    variant="raised"
-                    color="primary"
-                    href={urlBD}
-                  >
-                    {t("index.all benefits")}
-                  </a>
-                </div>
-              </HeroButton>
-            </div>
-          </Hero>
+    return (
+      <div className={classes.app}>
+        <Typography variant="display1" className={classes.title}>
+          Sentence Recorder
+        </Typography>
+
+        <div className={classes.textFieldContainer}>
+          <TextField
+            id="country"
+            label="Country you grew up in"
+            className={classes.textField}
+            value={this.state.country}
+            onChange={this.handleTextInput("country")}
+            margin="normal"
+          />
+          <TextField
+            id="city"
+            label="City you grew up in"
+            className={classes.textField}
+            value={this.state.city}
+            onChange={this.handleTextInput("city")}
+            margin="normal"
+          />
+          <TextField
+            id="age"
+            label="Current Age"
+            className={classes.textField}
+            value={this.state.age}
+            onChange={this.handleTextInput("age")}
+            margin="normal"
+          />
         </div>
+
+        <Typography variant="title" className={classes.sentence}>
+          {sentence}
+        </Typography>
+
+        <div className={classes.navigationButtonContainer}>
+          <Button
+            className={classes.button}
+            onClick={() => this.addToIndex(-1)}
+          >
+            Previous
+          </Button>
+          <Button className={classes.button} onClick={() => this.addToIndex(1)}>
+            Next
+          </Button>
+        </div>
+
+        <div className={classes.recordingLine}>
+          Recording: {this.state.isRecording ? "Recording" : "Not Recording"}
+        </div>
+
         <div>
-          <SearchArea>
-            <Search>
-              <SearchComponent
-                id="searchComponent"
-                i18n={this.props.i18n}
-                store={this.props.store}
-                t={this.props.t}
-              />
-            </Search>
-          </SearchArea>
+          <Button
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            onClick={this.startRecording}
+          >
+            Record
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={this.stopRecording}
+          >
+            Stop
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={this.clearRecording}
+          >
+            Clear
+          </Button>
         </div>
-      </Layout>
+
+        {this.state.blob ? (
+          <div>
+            <audio controls={true} src={URL.createObjectURL(this.state.blob)} />
+            <Button className={classes.button} onClick={this.uploadRecording}>
+              Upload
+            </Button>
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
     );
   }
 }
 
-App.propTypes = {
-  i18n: PropTypes.object.isRequired,
-  store: PropTypes.object,
-  t: PropTypes.func.isRequired
-};
-
-export default withI18next()(App);
+export default withStyles(styles)(App);
