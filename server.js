@@ -1,4 +1,5 @@
 const express = require("express");
+const multer = require("multer");
 const bodyParser = require("body-parser");
 const next = require("next");
 const helmet = require("helmet");
@@ -13,16 +14,25 @@ app.prepare().then(() => {
   const server = express();
   server.use(bodyParser.json());
   server.use(helmet());
-  // enable middleware for i18next
 
-  // submitting Feedback
-  server.post("/submitComment", (req, res) => {
-    console.log("Submitting comments");
-    airTable.writeFeedback(req.body);
+  // const storage = multer.memoryStorage()
+  const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, "/tmp/my-uploads");
+    },
+    filename: function(req, file, cb) {
+      cb(null, file.fieldname + "-" + Date.now());
+    }
+  });
+  const upload = multer({ storage: storage });
+
+  server.post("/submitBlob", upload.single("audio"), function(req, res, next) {
+    console.log("Submitting blob multer");
+    console.log("file", req.file);
+    console.log("body", req.body);
     res.sendStatus(200);
   });
 
-  // use next.js
   server.get("*", (req, res) => {
     // Check if browse is less than IE 11
     const ua = req.headers["user-agent"];

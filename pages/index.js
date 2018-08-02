@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Recorder from "recorder-js";
+require("isomorphic-fetch");
 
 const isBrowser = typeof window !== "undefined";
 
@@ -91,7 +92,18 @@ class App extends Component {
   };
 
   upload = () => {
-    console.log("upload", this.state.sentenceIndex, this.state.blob);
+    let fd = new FormData();
+    fd.append("audio", this.state.blob);
+    fd.append("sentence", this.state.sentences[this.state.sentenceIndex]);
+    fd.append("country", this.state.country);
+    fd.append("city", this.state.city);
+    fd.append("age", this.state.age);
+    fd.append("date", new Date().toUTCString());
+    fetch("/submitBlob", {
+      headers: { Accept: "application/json" },
+      method: "POST",
+      body: fd
+    });
   };
 
   clearRecording = () => {
@@ -199,7 +211,7 @@ class App extends Component {
         {this.state.blob ? (
           <div>
             <audio controls={true} src={URL.createObjectURL(this.state.blob)} />
-            <Button className={classes.button} onClick={this.uploadRecording}>
+            <Button className={classes.button} onClick={this.upload}>
               Upload
             </Button>
           </div>
