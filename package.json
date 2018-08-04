@@ -17,10 +17,12 @@
   "dependencies": {
     "@material-ui/core": "^1.4.1",
     "@material-ui/icons": "^2.0.0",
+    "aws-sdk": "^2.286.2",
     "babel-loader": "^7.1.5",
     "babel-plugin-emotion": "^9.2.6",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-polyfill": "^6.26.0",
+    "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
     "detect-browser": "^3.0.0",
     "emotion": "^9.2.6",

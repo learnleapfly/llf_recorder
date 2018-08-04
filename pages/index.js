@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Recorder from "recorder-js";
+const uuid = require("uuid");
 require("isomorphic-fetch");
 
 const isBrowser = typeof window !== "undefined";
@@ -65,7 +66,7 @@ const styles = theme => ({
 
 class App extends Component {
   state = {
-    audioStreamCreated: true,
+    // audioStreamCreated: true,
     sentences: ["Go attack the germs!!", "This is Khalai."],
     sentenceIndex: 0,
     blob: null,
@@ -98,12 +99,16 @@ class App extends Component {
     fd.append("country", this.state.country);
     fd.append("city", this.state.city);
     fd.append("age", this.state.age);
+    fd.append("id", uuid.v4());
     fd.append("date", new Date().toUTCString());
-    fetch("/submitBlob", {
+    const result = fetch("/submitBlob", {
       headers: { Accept: "application/json" },
       method: "POST",
       body: fd
+    }).then(result => {
+      console.log("fetch result:", result);
     });
+    this.clearRecording();
   };
 
   clearRecording = () => {
@@ -211,7 +216,11 @@ class App extends Component {
         {this.state.blob ? (
           <div>
             <audio controls={true} src={URL.createObjectURL(this.state.blob)} />
-            <Button className={classes.button} onClick={this.upload}>
+            <Button
+              className={classes.button}
+              onClick={this.upload}
+              disabled={this.state.isRecording}
+            >
               Upload
             </Button>
           </div>
