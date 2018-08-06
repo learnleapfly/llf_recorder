@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
+import { KeyboardArrowRight } from "@material-ui/icons";
 import green from "@material-ui/core/colors/green";
 import Recorder from "recorder-js";
 
@@ -174,14 +173,6 @@ class RecordAudio extends Component {
         </Typography>
 
         <div className={classes.navigationButtonContainer}>
-          <IconButton
-            className={classes.button}
-            onClick={this.handlePreviousButton}
-            disabled={this.state.sentenceIndex === 0}
-          >
-            <KeyboardArrowLeft />
-          </IconButton>
-
           <Button
             variant="contained"
             color="secondary"
@@ -191,13 +182,13 @@ class RecordAudio extends Component {
             {this.buttonValue()}
           </Button>
 
-          <IconButton
+          <Button
             className={classes.nextButton}
             onClick={this.handleNextButton}
             disabled={this.state.blob === null}
           >
-            <KeyboardArrowRight />
-          </IconButton>
+            Next <KeyboardArrowRight />
+          </Button>
         </div>
 
         <div className={classes.recordingLine}>{this.recordingMessage()}</div>
