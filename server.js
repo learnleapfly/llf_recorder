@@ -41,31 +41,35 @@ app.prepare().then(() => {
   server.use(helmet());
 
   const storage = multer.memoryStorage();
-  // const storage = multer.diskStorage({
-  //   destination: function(req, file, cb) {
-  //     cb(null, "/tmp/my-uploads");
-  //   },
-  //   filename: function(req, file, cb) {
-  //     cb(null, file.fieldname + "-" + Date.now());
-  //   }
-  // });
   const upload = multer({ storage: storage });
 
-  server.post("/submitBlob", upload.single("audio"), async function(
+  server.post("/submitData", upload.single("audio"), async function(
     req,
     res,
     next
   ) {
-    const fileName = process.env.DEBUG + "sentenceRecorder_" + req.body.id;
-    console.log("uploading", new Date().toUTCString(), fileName);
-    try {
-      await uploadFile(req.file.buffer, fileName + ".wav", "audio/x-wav");
-    } catch (error) {
-      console.log("Error uploading wav!! ", error);
-      return res.status(400).send(error);
+    let fileName = process.env.DEBUG + "recorder_" + req.body.id;
+    if (req.body.email !== undefined) {
+      fileName = fileName + "_email";
+    } else if (req.file !== undefined) {
+      fileName = fileName + "_audio_" + req.body.sentenceIndex;
     }
-    console.log("file success");
 
+    if (process.env.DEBUG === "local_") {
+      console.log("uploading", new Date().toUTCString(), fileName);
+      console.log("body:", req.body);
+    }
+    if (req.file !== undefined) {
+      try {
+        await uploadFile(req.file.buffer, fileName + ".wav", "audio/x-wav");
+      } catch (error) {
+        console.log("Error uploading wav!! ", error);
+        return res.status(400).send(error);
+      }
+      if (process.env.DEBUG === "local_") {
+        console.log("file success");
+      }
+    }
     try {
       await uploadFile(
         JSON.stringify(req.body, null, 2),
@@ -76,7 +80,9 @@ app.prepare().then(() => {
       console.log("Error uploading metadata!! ", error);
       return res.status(400).send(error);
     }
-    console.log("metadata success");
+    if (process.env.DEBUG === "local_") {
+      console.log("body success");
+    }
     return res.status(200).send("Success!");
   });
 
