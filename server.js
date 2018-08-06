@@ -5,6 +5,7 @@ const next = require("next");
 const helmet = require("helmet");
 const AWS = require("aws-sdk");
 const bluebird = require("bluebird");
+const sslRedirect = require("heroku-ssl-redirect");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -37,6 +38,7 @@ const uploadFile = (buffer, key, mimeType) => {
 
 app.prepare().then(() => {
   const server = express();
+  server.use(sslRedirect());
   server.use(bodyParser.json());
   server.use(helmet());
 
