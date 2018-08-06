@@ -17,15 +17,13 @@ const audioContext = isBrowser
 const recorder = new Recorder(audioContext, {});
 
 const createRecordingStream = () => {
-  navigator.mediaDevices
-    .getUserMedia({ audio: true })
-    .then(stream => recorder.init(stream))
-    .catch(err => console.log("Uh oh... unable to get stream...", err)); // eslint-disable-line no-console
+  if (isBrowser) {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(stream => recorder.init(stream))
+      .catch(err => console.log("Uh oh... unable to get stream...", err)); // eslint-disable-line no-console
+  }
 };
-
-if (isBrowser) {
-  createRecordingStream();
-}
 
 const styles = theme => ({
   app: {
@@ -66,11 +64,14 @@ const styles = theme => ({
 
 class RecordAudio extends Component {
   state = {
-    // audioStreamCreated: true,
     sentences: ["Go attack the germs!!", "This is Khalai."],
     sentenceIndex: 0,
     blob: null,
     isRecording: false
+  };
+
+  componentDidMount = () => {
+    createRecordingStream();
   };
 
   startRecording = () => {
@@ -149,6 +150,9 @@ class RecordAudio extends Component {
   handleNextButton = () => {
     this.upload();
     if (this.state.sentenceIndex === this.state.sentences.length - 1) {
+      recorder.stream.getAudioTracks().forEach(function(track) {
+        track.stop();
+      });
       this.props.nextSection();
     } else {
       this.addToIndex(1);
