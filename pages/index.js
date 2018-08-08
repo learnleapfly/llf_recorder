@@ -4,8 +4,9 @@ import { withStyles } from "@material-ui/core/styles";
 
 require("isomorphic-fetch");
 const uuid = require("uuid");
-import RecordAudio from "../components/recordAudio";
 import Profile from "../components/profile";
+import RecordAudio from "../components/recordAudio";
+import NoMic from "../components/no_mic";
 import Finished from "../components/finished";
 
 const styles = theme => ({
@@ -80,9 +81,12 @@ class App extends Component {
         return (
           <RecordAudio
             nextSection={() => this.setState({ section: "finished" })}
+            noMic={() => this.setState({ section: "no-mic" })}
             uploadAudio={this.uploadAudio}
           />
         );
+      case "no-mic":
+        return <NoMic nextSection={() => (window.location.href = "/")} />;
       case "finished":
         return <Finished uploadEmail={this.uploadEmail} />;
     }

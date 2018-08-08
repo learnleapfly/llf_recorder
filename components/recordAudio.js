@@ -15,15 +15,6 @@ const audioContext = isBrowser
 
 const recorder = new Recorder(audioContext, {});
 
-const createRecordingStream = () => {
-  if (isBrowser) {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then(stream => recorder.init(stream))
-      .catch(err => console.log("Uh oh... unable to get stream...", err)); // eslint-disable-line no-console
-  }
-};
-
 const styles = theme => ({
   app: {
     textAlign: "center",
@@ -70,7 +61,19 @@ class RecordAudio extends Component {
   };
 
   componentDidMount = () => {
-    createRecordingStream();
+    this.createRecordingStream();
+  };
+
+  createRecordingStream = () => {
+    if (isBrowser) {
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then(stream => recorder.init(stream))
+        .catch(err => {
+          console.log("Uh oh... unable to get stream...", err); // eslint-disable-line no-console
+          this.props.noMic();
+        });
+    }
   };
 
   startRecording = () => {
@@ -212,7 +215,8 @@ class RecordAudio extends Component {
 RecordAudio.propTypes = {
   classes: PropTypes.object.isRequired,
   uploadAudio: PropTypes.func.isRequired,
-  nextSection: PropTypes.func.isRequired
+  nextSection: PropTypes.func.isRequired,
+  noMic: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(RecordAudio);
