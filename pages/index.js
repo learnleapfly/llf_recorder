@@ -75,6 +75,9 @@ class App extends Component {
           <Profile
             nextSection={() => this.setState({ section: "recorder" })}
             handleTextInput={this.handleTextInput}
+            country={this.state.country}
+            city={this.state.city}
+            age={this.state.age}
           />
         );
       case "recorder":
