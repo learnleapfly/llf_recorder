@@ -7,6 +7,8 @@ import { KeyboardArrowRight } from "@material-ui/icons";
 import green from "@material-ui/core/colors/green";
 import Recorder from "recorder-js";
 
+const data = require("json-loader!../content/TheRacingFawn");
+
 const isBrowser = typeof window !== "undefined";
 
 const audioContext = isBrowser
@@ -46,7 +48,6 @@ const styles = theme => ({
       backgroundColor: "#fff"
     }
   },
-
   recordingLine: {
     margin: theme.spacing.unit
   }
@@ -54,7 +55,7 @@ const styles = theme => ({
 
 class RecordAudio extends Component {
   state = {
-    sentences: ["Go attack the germs!!", "This is Khalai."],
+    sentences: data,
     sentenceIndex: 0,
     blob: null,
     isRecording: false
