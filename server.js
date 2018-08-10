@@ -50,7 +50,13 @@ app.prepare().then(() => {
     res,
     next
   ) {
-    let fileName = process.env.DEBUG + "recorder_" + req.body.id;
+    let fileName =
+      process.env.DEBUG +
+      req.body.id +
+      "/" +
+      process.env.DEBUG +
+      "recorder_" +
+      req.body.id;
     if (req.body.email !== undefined) {
       fileName = fileName + "_email";
     } else if (req.file !== undefined) {
