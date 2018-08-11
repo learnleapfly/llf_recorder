@@ -8,7 +8,7 @@ import Profile from "../components/profile";
 import RecordAudio from "../components/recordAudio";
 import NoMic from "../components/no_mic";
 import Finished from "../components/finished";
-
+import Head from "../components/head";
 const styles = theme => ({
   app: {
     textAlign: "center",
@@ -99,6 +99,7 @@ class App extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.app}>
+        <Head title="Kasuku Recorder" />
         {this.sectionToDisplay(this.state.section)}
       </div>
     );
