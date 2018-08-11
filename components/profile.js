@@ -122,7 +122,11 @@ class Profile extends Component {
               color="primary"
             />
             {"I agree to the "}
-            <a href="/" target="_blank" rel="noopener noreferrer">
+            <a
+              href="/terms_and_conditions"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Terms and Conditions
             </a>
           </Typography>

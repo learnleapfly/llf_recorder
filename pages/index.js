@@ -4,11 +4,12 @@ import { withStyles } from "@material-ui/core/styles";
 
 require("isomorphic-fetch");
 const uuid = require("uuid");
+import Head from "../components/head";
 import Profile from "../components/profile";
 import RecordAudio from "../components/recordAudio";
 import NoMic from "../components/no_mic";
 import Finished from "../components/finished";
-import Head from "../components/head";
+
 const styles = theme => ({
   app: {
     textAlign: "center",
