@@ -4,7 +4,6 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { KeyboardArrowRight } from "@material-ui/icons";
-import green from "@material-ui/core/colors/green";
 import Recorder from "recorder-js";
 
 const data = require("json-loader!../content/TheRacingFawn");
@@ -35,18 +34,6 @@ const styles = theme => ({
     textTransform: "none",
     margin: theme.spacing.unit,
     marginBottom: 4 * theme.spacing.unit
-  },
-  nextButton: {
-    textTransform: "none",
-    margin: theme.spacing.unit,
-    marginBottom: 4 * theme.spacing.unit,
-    backgroundColor: green[500],
-    "&:hover": {
-      backgroundColor: green[700]
-    },
-    "&:disabled": {
-      backgroundColor: "#fff"
-    }
   },
   recordingLine: {
     margin: theme.spacing.unit
@@ -115,7 +102,7 @@ class RecordAudio extends Component {
   buttonValue = () => {
     switch (true) {
       case this.state.blob != null:
-        return "Record Again";
+        return "Next";
       case this.state.isRecording:
         return "Stop";
       default:
@@ -125,11 +112,12 @@ class RecordAudio extends Component {
 
   handleButtonPress = () => {
     switch (this.buttonValue()) {
+      case "Next":
+        return this.handleNextButton();
       case "Stop":
-        this.stopRecording();
-        break;
-      default:
-        this.startRecording();
+        return this.stopRecording();
+      case "Record":
+        return this.startRecording();
     }
   };
 
@@ -144,10 +132,6 @@ class RecordAudio extends Component {
       default:
         return "Done recording! Re-record or press Next to finish";
     }
-  };
-
-  handlePreviousButton = () => {
-    this.addToIndex(-1);
   };
 
   handleNextButton = () => {
@@ -179,19 +163,22 @@ class RecordAudio extends Component {
         <div className={classes.navigationButtonContainer}>
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             className={classes.button}
             onClick={this.handleButtonPress}
           >
             {this.buttonValue()}
+            {this.buttonValue() === "Next" ? <KeyboardArrowRight /> : ""}
           </Button>
 
           <Button
-            className={classes.nextButton}
-            onClick={this.handleNextButton}
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={this.startRecording}
             disabled={this.state.blob === null}
           >
-            Next <KeyboardArrowRight />
+            Record Again
           </Button>
         </div>
 
