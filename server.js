@@ -58,7 +58,7 @@ app.prepare().then(() => {
       "recorder_" +
       req.body.id;
     if (req.body.email !== undefined) {
-      fileName = fileName + "_email";
+      fileName = "emails/" + process.env.DEBUG + req.body.id;
     } else if (req.file !== undefined) {
       fileName = fileName + "_audio_" + req.body.sentenceIndex;
     }

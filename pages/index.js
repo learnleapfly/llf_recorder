@@ -57,7 +57,7 @@ class App extends Component {
 
   uploadEmail = email => {
     let fd = new FormData();
-    fd.append("id", this.state.id);
+    fd.append("id", uuid.v4().substring(0, 7));
     fd.append("audio", null);
     fd.append("email", email);
     fetch("/submitData", {
