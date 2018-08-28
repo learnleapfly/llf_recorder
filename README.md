@@ -1,4 +1,4 @@
-# sentenceRecorder
+# LLFRecorder
 
 Record user reading sentences and save to S3 for analysis.
 
