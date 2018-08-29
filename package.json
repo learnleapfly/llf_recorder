@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
-    "postinstall": "next build",
+    "heroku-postbuild": "next build",
     "start": "NODE_ENV=production node server.js",
     "test": "NODE_ENV=test jest --coverage",
     "lint": "node_modules/eslint/bin/eslint.js pages components __tests__",
@@ -56,7 +56,7 @@
     "babel-jest": "^23.4.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "1.1.1",
-    "eslint": "^5.2.0",
+    "eslint": "^5.4.0",
     "eslint-config-airbnb": "^17.0.0",
     "eslint-loader": "^2.1.0",
     "eslint-plugin-import": "^2.13.0",

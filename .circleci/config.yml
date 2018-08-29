@@ -34,16 +34,12 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: yarn test -w2
       - run:
-          command: node node_modules/eslint/bin/eslint.js pages components __tests__
+          name: jest
+          command: yarn test
+      - run:
           name: lint
-      - run:
-          command: ~/repo/.circleci/notify_failure.sh
-          name: "Report failing Master"
-          when: on_fail
-
-    working_directory: ~/repo
+          command: yarn lint
 
 workflows:
   version: 2

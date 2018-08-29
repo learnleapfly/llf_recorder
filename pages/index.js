@@ -20,7 +20,7 @@ const styles = theme => ({
   }
 });
 
-class App extends Component {
+export class IndexPage extends Component {
   state = {
     id: uuid.v4().substring(0, 8),
     section: "profile",
@@ -100,15 +100,18 @@ class App extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.app}>
-        <Head title="Kasuku Recorder" />
+        <Head
+          title="LLF Recorder"
+          description="Record a story and upload data for analysis"
+        />
         {this.sectionToDisplay(this.state.section)}
       </div>
     );
   }
 }
 
-App.propTypes = {
+IndexPage.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(App);
+export default withStyles(styles)(IndexPage);
