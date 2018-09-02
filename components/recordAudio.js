@@ -151,6 +151,7 @@ class RecordAudio extends Component {
       this.props.nextSection();
     } else {
       this.addToIndex(1);
+      this.startRecording();
     }
   };
 
@@ -173,20 +174,23 @@ class RecordAudio extends Component {
             variant="contained"
             color="primary"
             className={classes.button}
-            onClick={this.handleButtonPress}
+            onClick={this.startRecording}
+            disabled={this.state.blob === null}
           >
-            {this.buttonValue()}
-            {this.buttonValue() === "Next" ? <KeyboardArrowRight /> : ""}
+            Record Again
           </Button>
 
           <Button
             variant="contained"
             color="primary"
             className={classes.button}
-            onClick={this.startRecording}
-            disabled={this.state.blob === null}
+            onClick={this.handleButtonPress}
+            style={{
+              backgroundColor: this.state.isRecording ? "green" : "red"
+            }}
           >
-            Record Again
+            {this.buttonValue()}
+            {this.buttonValue() === "Next" ? <KeyboardArrowRight /> : ""}
           </Button>
         </div>
 
