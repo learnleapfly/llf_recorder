@@ -5,7 +5,6 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { KeyboardArrowRight } from "@material-ui/icons";
 import Recorder from "recorder-js";
-import data from "../content/TheRacingFawn";
 
 const isBrowser = typeof window !== "undefined";
 
@@ -50,7 +49,7 @@ const styles = theme => ({
 
 class RecordAudio extends Component {
   state = {
-    sentences: data,
+    sentences: this.props.data,
     sentenceIndex: 0,
     blob: null,
     isRecording: false
@@ -216,7 +215,8 @@ RecordAudio.propTypes = {
   classes: PropTypes.object.isRequired,
   uploadAudio: PropTypes.func.isRequired,
   nextSection: PropTypes.func.isRequired,
-  noMic: PropTypes.func.isRequired
+  noMic: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(RecordAudio);
