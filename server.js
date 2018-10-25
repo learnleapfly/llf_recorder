@@ -10,6 +10,7 @@ const sslRedirect = require("heroku-ssl-redirect");
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
+const isBarb = process.env.BARB !== undefined;
 
 // configure the keys for accessing AWS
 AWS.config.update({
@@ -30,7 +31,7 @@ const uploadFile = (buffer, key, mimeType) => {
     Bucket: process.env.AWS_BUCKET,
     ACL: "private",
     Body: buffer,
-    Key: key,
+    Key: isBarb ? "Barb_" + key : key,
     ContentType: mimeType
   };
   return s3.upload(params).promise();

@@ -9,6 +9,8 @@ import Profile from "../components/profile";
 import RecordAudio from "../components/recordAudio";
 import NoMic from "../components/no_mic";
 import Finished from "../components/finished";
+import data from "../content/TheRacingFawn";
+import dataBarb from "../content/Barb";
 
 const styles = theme => ({
   app: {
@@ -20,10 +22,12 @@ const styles = theme => ({
   }
 });
 
+const isBarb = process.env.BARB !== undefined;
+
 export class IndexPage extends Component {
   state = {
     id: uuid.v4().substring(0, 8),
-    section: "profile",
+    section: isBarb ? "recorder" : "profile",
     country: "",
     city: "",
     age: "",
@@ -87,6 +91,7 @@ export class IndexPage extends Component {
             nextSection={() => this.setState({ section: "finished" })}
             noMic={() => this.setState({ section: "no-mic" })}
             uploadAudio={this.uploadAudio}
+            data={isBarb ? dataBarb : data}
           />
         );
       case "no-mic":
